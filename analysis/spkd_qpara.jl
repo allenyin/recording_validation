@@ -7,6 +7,8 @@ function victorD(tli, tlj, cost)
 # tlj: vector of spike times for second spike train
 # cost: cost per unit time to move a spike
 #
+# Spike time in seconds
+#
 # Translated to Julia by Allen Yin from MATLAB code by Daniel Reich
 
     

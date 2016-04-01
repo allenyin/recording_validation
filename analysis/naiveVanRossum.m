@@ -18,7 +18,7 @@ function d = naiveVanRossum(train1, train2, tau, Fs)
 % -Allen Yin
 
     tol = 1e-4;
-    t = min([train1;train2]):1/Fs:max([train2;train2]); % time vector
+    t = min([train1;train2]):1/Fs:max([train1;train2]); % time vector
     spikes1 = zeros(numel(t),1);
     spikes2 = zeros(numel(t),1);
 

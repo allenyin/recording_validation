@@ -19,6 +19,16 @@ function d = fastVanRossum(train1, train2, tau)
 %   "A comparison of binless spike train measures"
 %   Neural computing and applications (2010).
 %
+% Edit 4/1/2016: 
+%   The exact algorithm as described by Paiva does not work! For example, fastVanRossum([1,2,3],[1,2,3],1) 
+%   yields a distance that is greater than fastVanRossum([1,2,3],[4,5,6],1).
+%
+%   This may be solved by changing the sign of the last double summation in equation (6) of the referenced
+%   paper to negative. 
+%
+%   However, it's not clear to me whether the naiveVanRossu eventually converge to the analytical result,
+%   depending on dt...
+%
 % -Allen Yin
 
     sum1 = 0;
@@ -46,6 +56,10 @@ function d = fastVanRossum(train1, train2, tau)
         end
     end
 
-    d = (sum1+sum2)/2 + sum3;
+    % Paiva's original formula
+    % d = (sum1+sum2)/2 + sum3;
+
+    % Change to Paiva's potential error.
+    d = (sum1+sum2)/2 - sum3;
 end
 

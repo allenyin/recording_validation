@@ -47,9 +47,9 @@ function [acor_lag, d_CC] = binned_xcorr(train1, train2, binSize)
                 binSize(t), -lagDiff*binSize(t), acor(I));
         acor_lag{t} = [acor,lag];
 
-        % calculate similarity measure
-        d_CC(t) = dot(binned(1,:), binned(2,:))/(norm(binned(1,:))*norm(binned(2,:)));
-        fprintf('                Similarity measure with rectangular kernel = %0.3f\n', d_CC(t));
+        % calculate dissimilarity measure (distance)
+        d_CC(t) = 1-dot(binned(1,:), binned(2,:))/(norm(binned(1,:))*norm(binned(2,:)));
+        fprintf('               Dissimilarity measure with rectangular kernel = %0.3f\n', d_CC(t));
     end
 end
 
