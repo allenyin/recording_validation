@@ -15,9 +15,11 @@ function [refFirstPeak, dataFirstPeak] = align_by_waveform_firstSpike(recording,
 
     % Find the peak of first spike in ref signal, since spike times given
     % is the time of initiation of spike, not the peak.
-    [Y, I] = sort(reference, 'descend');
-    I = I(1:numel(refSpikeTimes));
-    refFirstPeak = min(I);          % unit = sample number
+    tFirstSpike = refSpikeTimes(1);
+    % find the peak in the 5ms after that time
+    idxFirstSpike = round(tFirstSpike*Fs);
+    [pks, locs] = findpeaks(reference(idxFirstSpike : idxFirstSpike+round((5e-3)*Fs)), 'MINPEAKHEIGHT', 0.65);
+    refFirstPeak = idxFirstSpike+locs(1)-1;
 
     % Find the peak of first spike of recorded signal
     % Assume spike amplitude greater than noise by quiet a bit, the threshold

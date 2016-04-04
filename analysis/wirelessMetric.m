@@ -1,5 +1,5 @@
 function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPDist, VRDist, SchreiberDist]...
-          = wirelessMetric(data, reference, binSize)
+          = wirelessMetric(data, reference, binSize, minPeakHeight, varargin)
 
 % Plot and compare the measured wireless data against
 % a reference signal.
@@ -11,6 +11,10 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
 %                 The named mat file contains variables r1, signals, and target. Details  given in the
 %                 manual for the software.
 %   binSize - time scale at which we are running metric comparisons. In ms.
+%   minPeakHeight - threshold of peak finding to locate spike in analog signal
+%
+% Options:
+%   'plotAnalog' - Will only plot the analog traces, no analysis done.
 %
 % Outputs:
 %   signals - reference waveform signal, original
@@ -23,8 +27,28 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
 %   VRDist - Van Rossum distances.
 %   SchreiberDist - Schreiber distances. 
 
+    assert(nargin>=4, 'Not enough arguments! Requires data, reference, binSize, minPeakHeight');
+    plotAnalog = false;
+    if nargin>4
+        for i=1:(nargin-4)
+            if ischar(varargin{i})
+                switch lower(varargin{i}),
+                    case 'plotanalog'
+                        plotAnalog = true;
+                end
+            end
+        end
+    end
+
     Fs = 31250;         % Wireless sampling frequency
-    load(reference);    % r1, signals, target
+    if isequal(class(reference), 'char')
+        % Entered a file name
+        load(reference);    % r1, signals, target
+    elseif isequal(class(reference), 'struct')
+        % Otherwise it's an object 
+        signals = reference.signals;
+        target = reference.target;
+    end
 
     refSpikeTimes = target.targettimes.';  % in seconds, convert to column
 
@@ -36,9 +60,21 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
     waveformData = plot_raw_channels(waveformFile, 'noplot');
     waveformData = waveformData(1,:)./128;  % only first channel is sorted, normalize to [-1,1]
 
-    %align_by_waveform_xcorr(waveformData, signals, Fs);
+    % Might have extra stuff in the back due to manually stopping the recording. Allow no more than 2s
+    % extra
+    maxLen = numel(signals) + 2*Fs;
+    maxTime = maxLen/Fs;
+    if numel(waveformData) > maxLen,
+        waveformData = waveformData(1:maxLen);
+    end
+
     [refFirstPeak, dataFirstPeak] = align_by_waveform_firstSpike(waveformData, signals, Fs, ...
-                                        refSpikeTimes, 0.7, 'Wireless Reference and Recording');
+                                        refSpikeTimes, minPeakHeight, 'Wireless Reference and Recording');
+    if plotAnalog,
+        refSpikeTimes = []; dataSpikeTimes = [];
+        binnedXcorr = []; VPDist = []; VRDist = []; SchreiberDist = [];
+        return;
+    end
 
     % Load spike data, this loads the following into workspace
     %   spike_ch   - Array with channel# for which a spike has been detected. 

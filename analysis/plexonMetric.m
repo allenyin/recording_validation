@@ -1,5 +1,5 @@
 function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPDist, VRDist, SchreiberDist]...
-        = plexonMetric(data, reference, binSize)
+        = plexonMetric(data, reference, binSize, ADchannel, minPeakHeight, varargin)
     
 % Plot and compare the measured Plexon data against a reference signal.
 %
@@ -10,6 +10,11 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
 %               Nhamoinesu Mtetwa.
 %               The named mat file contains variables r1, signals, and target. Details
 %               given in the software manual.
+%   ADchannel - Channel of plexon that contains the analog signal
+%   minPeakHeight - threshold for peak finding to locate spike in analog signal
+%
+% Options:
+%   'plotAnalog' - Will only plot the analog traces, no analysis done.
 %
 %  Outputs:
 %   signals - reference waveform signal, original
@@ -21,11 +26,35 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
 %   VPDist - Victor-purpura distances.
 %   VRDist - Van Rossum distances.
 %   SchreiberDist - Schreiber distances. 
+%
+% Note that it is necessary to plot the raw traces first and then check the peak levels to establish a
+% reasonable level for peak finding.
+   
+    assert(nargin>=5, 'Not enough arguments! Requires data, reference, binSize, ADchannel, minPeakHeight');
+    plotAnalog = false;
+    if nargin>5
+        for i=1:(nargin-5)
+            if ischar(varargin{i})
+                switch lower(varargin{i}),
+                    case 'plotanalog'
+                        plotAnalog = true;
+                end
+            end
+        end
+    end
 
     Fs_plexon = 20000;     % Plexon sampling frequency, in Hz
     Fs_ref = 31250;        % Reference sampling frequency, in Hz
 
-    load(reference);                        % r1, signals, target
+    if isequal(class(reference), 'char')
+        % Entered a file name
+        load(reference);                        % r1, signals, target
+    elseif isequal(class(reference), 'struct')
+        % Otherwise it's an object
+        signals = reference.signals;
+        target = reference.target;
+    end
+
     refSpikeTimes = target.targettimes.';   % in seconds, convert to column vector
 
     % Load plexon data
@@ -35,9 +64,9 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
     load(spikeFile);
 
     % Time vector for plexon
-    waveformData = double(AD12);
+    eval(['waveformData=double(', ADchannel, ');']);
     waveformData = waveformData./max(abs(waveformData));
-    plexTime = double(AD12_ts);       % generate time vector for plexon waveform
+    eval(['plexTime=double(', ADchannel, '_ts);']);
 
     % interpolate waveformData to 31250Hz.
     waveformData = interp1(plexTime, waveformData, plexTime(1):1/Fs_ref:plexTime(end));
@@ -50,7 +79,13 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
         waveformData = waveformData(1:maxLen);
     end
 
-    [refFirstPeak, dataFirstPeak] = align_by_waveform_firstSpike(waveformData, signals, Fs_ref, refSpikeTimes, 0.7, 'Plexon Reference and Recording');
+    [refFirstPeak, dataFirstPeak] = align_by_waveform_firstSpike(waveformData, signals, Fs_ref, refSpikeTimes, minPeakHeight, 'Plexon Reference and Recording');
+
+    if plotAnalog,
+        refSpikeTimes = []; dataSpikeTimes = [];
+        binnedXcorr = []; VPDist = []; VRDist = []; SchreiberDist = [];
+        return;
+    end
 
     % Now get the Plexon spike timings
     timelag = (dataFirstPeak-refFirstPeak)/Fs_ref;

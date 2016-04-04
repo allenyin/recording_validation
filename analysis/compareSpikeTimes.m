@@ -20,7 +20,7 @@ function [binnedXcorr, VPDist, VRDist, SchreiberDist] = compareSpikeTimes(refSpi
     plotLinearRegression(refSpikeTimes(2:numSpikes), dataSpikeTimes(2:numSpikes), ...
                          'reference spike times (s)', sprintf('%s recorded spike times (s)',tstr));
 
-    % Plot the raster plot for comparison, function in the owl monkey code directory
+    % Plot the raster plot for comparison, function in the monkeyCar scripts directory
     rasterplot({refSpikeTimes(2:end), dataSpikeTimes(2:end)});
     title(sprintf('%s rasters: refSpikeTimes, dataSpikeTimes', tstr));
     xlabel('time (s)');

@@ -1,23 +1,28 @@
-reference_data = '../audioSignals/reference_signal.mat';
-RHD_data = '../wirelessRecordings/slowSpikes/RHD_fixedgain=-18_1spike2msRP';
-RHA_data = '../wirelessRecordings/slowSpikes/RHA_1p4_AGC4000_noLMS_1spike2msRP';
-plexon_data = '../plexonRecordings/validation_test1_plexon';
+% Test script on test signal
 
+reference_data = '../audioSignals/reference_signal_100dB.mat';
+RHD_data = '../wirelessRecordings/slowSpikes/RHD_fixedgain=-18_1spike2msRP_100dB';
+RHA_data = '../wirelessRecordings/slowSpikes/RHA_1p4_AGC4000_noLMS_1spike2msRP_100dB';
+plexon_data = '../plexonRecordings/validation_test1_plexon_100dB';
+
+SNR = [100, 30, 10, 5, 1];      % SNR in dB 
 binSize = [10, 25, 50, 100];    % in ms
+
+
 
 fprintf('\n---------------RHD against reference----------\n');
 [signals, RHD.waveformData, RHD.refSpikeTimes, RHD.dataSpikeTimes, RHD.binnedXCorr, RHD.VPDist, ...
- RHD.VRDist, RHD.SchreiberDist] = wirelessMetric(RHD_data, reference_data, binSize);
+ RHD.VRDist, RHD.SchreiberDist] = wirelessMetric(RHD_data, reference_data, binSize, 0.7);
 close all;
  
 fprintf('\n---------------RHA against reference----------\n');
 [signals, RHA.waveformData, RHA.refSpikeTimes, RHA.dataSpikeTimes, RHA.binnedXCorr, RHA.VPDist, ...
- RHA.VRDist, RHA.SchreiberDist] = wirelessMetric(RHA_data, reference_data, binSize);
+ RHA.VRDist, RHA.SchreiberDist] = wirelessMetric(RHA_data, reference_data, binSize, 0.7);
 close all;
 
 fprintf('\n---------------Plexon against reference----------\n');
 [signals, plexon.waveformData, plexon.refSpikeTimes, plexon.dataSpikeTimes, plexon.binnedXCorr, ...
- plexon.VPDist, plexon.VRDist, plexon.SchreiberDist] = plexonMetric(plexon_data, reference_data, binSize);
+ plexon.VPDist, plexon.VRDist, plexon.SchreiberDist] = plexonMetric(plexon_data, reference_data, binSize, 0.7, 'AD12');
 close all;
 
 % Plot comparison values
