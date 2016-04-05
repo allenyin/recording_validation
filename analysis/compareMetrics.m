@@ -28,13 +28,13 @@ close all;
 % Plot comparison values
 
 figure;
-plot(binSize, RHD.binnedXCorr.d_CC, 'b-*');
+plot(binSize, RHD.binnedXCorr.d_B, 'b-*');
 hold on;
-plot(binSize, RHA.binnedXCorr.d_CC, 'r-*');
-plot(binSize, plexon.binnedXCorr.d_CC, 'g-*');
+plot(binSize, RHA.binnedXCorr.d_B, 'r-*');
+plot(binSize, plexon.binnedXCorr.d_B, 'g-*');
 xlim([0, 120]); xlabel('Bin size (ms)');
-ylim([0, 1]); ylabel('Dissimilarity');
-title('Binned cross-correlation dissimilarity');
+ylabel('Dissimilarity');
+title('Binned distance');
 legend('RHD', 'RHA', 'plexon');
 
 figure;

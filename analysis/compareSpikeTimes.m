@@ -26,10 +26,10 @@ function [binnedXcorr, VPDist, VRDist, SchreiberDist] = compareSpikeTimes(refSpi
     xlabel('time (s)');
 
     % Plot binned firing rates, analyze cross-correlation.
-    [binnedXcorr.acor_lag, binnedXcorr.d_CC] = binned_xcorr(refSpikeTimes(2:end), dataSpikeTimes(2:end), binSize);    
+    [binnedXcorr.acor_lag, binnedXcorr.d_B] = binned_xcorr(refSpikeTimes(2:end), dataSpikeTimes(2:end), binSize);    
 
     % Victor-Purpura distance
-    q = 2./(binSize.*1e-3);         % cost of shifting a spike is 1 if moved by 10ms, 25ms, etc..
+    q = 1./(binSize.*1e-3);         % cost of shifting a spike is 1 if moved by 10ms, 25ms, etc..
     Jl.include('spkd_qpara.jl');    % This program must be run in the same directory as the julia file.
     VPDist = zeros(size(q));
     fprintf('\n-----------Victor-Purpura distance---------\n');

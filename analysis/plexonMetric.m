@@ -21,7 +21,7 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
 %   waveformData - wireless recording waveform data, normalized to [-1,1].
 %   refSpikeTimes - spike times of reference signal, after aligning the first peak with that of recording.
 %   dataSpikeTimes - spike times of wireless recording, after aligning the first with that of reference.
-%   binnedXcorr - struct containing d_CC and acor_lag. d_CC is binned cross-correlation similarity measure.
+%   binnedXcorr - struct containing d_B and acor_lag. d_B is binned distance 
 %                 acor_lag is a cell-array of the cross-correlation of the binned firing rates.
 %   VPDist - Victor-purpura distances.
 %   VRDist - Van Rossum distances.

@@ -1,22 +1,17 @@
-function [acor_lag, d_CC] = binned_xcorr(train1, train2, binSize)
+function [acor_lag, d_B] = binned_xcorr(train1, train2, binSize)
 
 % Given the spike times in train1 and train2 in seconds, use values in binSize for binning.
 % Plot the cross-correlation of the binned firing rates and print out the maximum cross-correlation
 % value and the time lag.
 %
-% Also calculates the binned cross-correlation similarity measures, which is the
-% cosine of the angle between the two binned vectors. See d_CC in:
-%
-%   Paiva, Park and Principe:
-%   "A comparison of binless spike train measures"
-%   Neural computing and applications (2010).
-%
+% Also calculates the binned distance, which is the absolute value of different of binned firing rates,
+% defined as D_B in (Chicharro et al., 2011)
 %
 % train1, train2: column vectors, spike times in seconds
 % binSize: vector with the bin size in ms.
 % acor_lag: cell of arrays, number of elements equalt to that in binSize.
 %           Each cell contains the [acor,lag] for each cross-correlation. 
-% d_CC: binned cross-correlation similarity metric for each binsize.
+% d_B: binned distance for each binsize.
 %
 % -Allen Yin
 
@@ -27,7 +22,7 @@ function [acor_lag, d_CC] = binned_xcorr(train1, train2, binSize)
 
     fprintf('\n----------Binned cross-correlation metrics----------\n');
     acor_lag = cell(numel(binSize),1);
-    d_CC = zeros(numel(binSize),1);
+    d_B = zeros(numel(binSize),1);
     for t=1:numel(binSize),
         [binned, bins, ~] = binning(allSpikes, binSize(t)); % binned has units of spike/binsize(t)
         binned = binned./(binSize(t)*1e-3);
@@ -47,9 +42,8 @@ function [acor_lag, d_CC] = binned_xcorr(train1, train2, binSize)
                 binSize(t), -lagDiff*binSize(t), acor(I));
         acor_lag{t} = [acor,lag];
 
-        % calculate dissimilarity measure (distance)
-        d_CC(t) = 1-dot(binned(1,:), binned(2,:))/(norm(binned(1,:))*norm(binned(2,:)));
-        fprintf('               Dissimilarity measure with rectangular kernel = %0.3f\n', d_CC(t));
+        % calculate binned distance
+        d_B(t) = sum(abs(binned(1,:) - binned(2,:)));
     end
 end
 

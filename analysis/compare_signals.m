@@ -54,18 +54,18 @@ RHDlines = {'k-*', 'b-*', 'r-*', 'g-*', 'c-*'}; % RHD is *
 RHAlines = {'k-o', 'b-o', 'r-o', 'g-o', 'c-o'}; % RHA is o
 plexlines= {'k-x', 'b-x', 'r-x', 'g-x', 'c-x'}; % plexon is x
 
-% d_CC
+% d_B
 figure; hold on;
 l = {};
 for i=1:numel(SNR)
-    plot(binSize, RHD_results{i}.binnedXCorr.d_CC, RHDlines{i});
-    plot(binSize, RHA_results{i}.binnedXCorr.d_CC, RHAlines{i});
-    plot(binSize, plex_results{i}.binnedXCorr.d_CC, plexlines{i});
+    plot(binSize, RHD_results{i}.binnedXCorr.d_B, RHDlines{i});
+    plot(binSize, RHA_results{i}.binnedXCorr.d_B, RHAlines{i});
+    plot(binSize, plex_results{i}.binnedXCorr.d_B, plexlines{i});
     l = [l, sprintf('RHD %ddB', SNR(i)), sprintf('RHA %ddB', SNR(i)), sprintf('Plex %ddB', SNR(i))];
 end
 xlim([0, 120]); xlabel('Bin size (ms)');
-ylim([0, 1]); ylabel('Dissimilarity');
-title('Binned cross-correlation dissimilarity');
+ylabel('Distance');
+title('Binned distance');
 legend(l);
 
 % Victor-Purpura distance
@@ -109,17 +109,17 @@ title('Schreiber dissimilarity');
 legend(l);
 
 %--------- Plot mean+/-std of metric over different noise level---------------
-RHD_d_CC = cell2mat(cellfun(@(x) x.binnedXCorr.d_CC.', RHD_results, 'UniformOutput', false));
-RHA_d_CC = cell2mat(cellfun(@(x) x.binnedXCorr.d_CC.', RHA_results, 'UniformOutput', false));
-plex_d_CC = cell2mat(cellfun(@(x) x.binnedXCorr.d_CC.', plex_results, 'UniformOutput', false));
+RHD_d_B = cell2mat(cellfun(@(x) x.binnedXCorr.d_B.', RHD_results, 'UniformOutput', false));
+RHA_d_B = cell2mat(cellfun(@(x) x.binnedXCorr.d_B.', RHA_results, 'UniformOutput', false));
+plex_d_B = cell2mat(cellfun(@(x) x.binnedXCorr.d_B.', plex_results, 'UniformOutput', false));
 figure; hold on;
-errorbar(binSize, mean(RHD_d_CC,1), std(RHD_d_CC,1), 'b');
-errorbar(binSize, mean(RHA_d_CC,1), std(RHA_d_CC,1), 'r');
-errorbar(binSize, mean(plex_d_CC,1), std(plex_d_CC,1), 'g');
+errorbar(binSize, mean(RHD_d_B,1), std(RHD_d_B,1), 'b');
+errorbar(binSize, mean(RHA_d_B,1), std(RHA_d_B,1), 'r');
+errorbar(binSize, mean(plex_d_B,1), std(plex_d_B,1), 'g');
 legend('RHD', 'RHA', 'plexon');
 xlim([0, 120]); xlabel('Bin size (ms)');
-ylim([0, 1]); ylabel('Dissimilarity');
-title('Binned cross-correlation dissimilarity');
+ylabel('Distance');
+title('Binned distance');
 
 RHD_VP = cell2mat(cellfun(@(x) x.VPDist, RHD_results, 'UniformOutput', false));
 RHA_VP = cell2mat(cellfun(@(x) x.VPDist, RHA_results, 'UniformOutput', false));
