@@ -13,19 +13,19 @@ plexon_prefix = '../plexonRecordings/plexon_1spike2msRP';
 
 load(reference_data);
 fprintf('\n------------ RHD against reference ---------\n');
-for i=2:2%numel(SNR),
+for i=5:5%numel(SNR),
     RHD_str = sprintf('%s_%ddB', RHD_prefix, SNR(i));
     [~,~,~,~,~,~,~,~] = wirelessMetric(RHD_str, referenceSignals{i}, binSize, 0.7, 'plotAnalog');
 end
 
-fprintf('\n------------ RHA against reference ---------\n');
-for i=2:2%numel(SNR),
-    RHA_str = sprintf('%s_%ddB', RHA_prefix, SNR(i));
-    [~,~,~,~,~,~,~,~] = wirelessMetric(RHA_str, referenceSignals{i}, binSize, 0.75, 'plotAnalog');
-end
+% fprintf('\n------------ RHA against reference ---------\n');
+% for i=1:1%numel(SNR),
+%     RHA_str = sprintf('%s_%ddB', RHA_prefix, SNR(i));
+%     [~,~,~,~,~,~,~,~] = wirelessMetric(RHA_str, referenceSignals{i}, binSize, 0.75, 'plotAnalog');
+% end
 
-fprintf('\n------------ plexon against reference ---------\n');
-for i=2:2%numel(SNR),
-    plexon_str = sprintf('%s_%ddB', plexon_prefix, SNR(i));
-    [~,~,~,~,~,~,~,~] = plexonMetric(plexon_str, referenceSignals{i}, binSize, 'AD17', 0.3,  'plotAnalog');
-end
+% fprintf('\n------------ plexon against reference ---------\n');
+% for i=5:5%numel(SNR),
+%     plexon_str = sprintf('%s_%ddB', plexon_prefix, SNR(i));
+%     [~,~,~,~,~,~,~,~] = plexonMetric(plexon_str, referenceSignals{i}, binSize, 'AD17', 0.3,  'plotAnalog');
+% end
