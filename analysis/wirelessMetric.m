@@ -57,7 +57,7 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
     spikeFile = sprintf('%s.mat', data);
 
     % waveform data
-    waveformData = plot_raw_channels(waveformFile, 'noplot');
+    waveformData = plot_raw_channels(waveformFile, 'plot', true);
     waveformData = waveformData(1,:)./128;  % only first channel is sorted, normalize to [-1,1]
 
     % Might have extra stuff in the back due to manually stopping the recording. Allow no more than 2s
