@@ -98,7 +98,7 @@ function [signals, waveformData, refSpikeTimes, dataSpikeTimes, binnedXcorr, VPD
     load(spikeFile);
     f_mstimer = 9155.273438;        % Hz
     mstimer = double(mstimer);      % convert from uint32 to double
-    spike_ts = double(spike_ts);    % convert from uint32 to double    
+    spike_ts = spike_ts+1;          % convert to 1-indexed
 
     [refSpikeTimes, dataSpikeTimes] = ...
         extractSpikeTimes(f_mstimer, mstimer, spike_ts, refSpikeTimes, Fs, dataFirstPeak, refFirstPeak);
